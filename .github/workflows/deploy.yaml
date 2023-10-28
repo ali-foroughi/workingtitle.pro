@@ -1,0 +1,30 @@
+name: auto-deploy
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Create the SSH directory and give it the right permissions
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+      - name: Run ssh-agent (inside the build environment)
+        run: |
+          eval $(ssh-agent -s)
+          echo "${{secrets.SSH_PRIV_KEY}}" | tr -d '\r' | ssh-add -
+          ssh-keyscan "${{secrets.HOST_IP}}" >> ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Build with Hugo & deploy
+        run: |
+          apt-get update && apt-get install -y hugo rsync
+          hugo
+          rsync -avz -e "ssh -p ${{secrets.SSH_PORT}}" --delete public/ root@${{secrets.HOST_IP}}:/var/www/workingtitle.pro/
+
