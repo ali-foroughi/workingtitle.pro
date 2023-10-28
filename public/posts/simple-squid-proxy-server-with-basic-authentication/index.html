@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Liste - https://workingtitle.pro">
+    <title>Simple squid proxy server with basic authentication | $ root@workingtitle.pro</title>
+    <meta name="description" content="A minimal hugo theme focus on content">
+    <meta property="og:title" content="Simple squid proxy server with basic authentication" />
+<meta property="og:description" content="In previous posts I talked about setting up a double-proxy server using Squid. In this guide I’m gonna walk you through setting up a simple proxy server using Squid, and apply a simple authentication method.
+The official Squid documentation on this issue is very vague and all over the place and I couldn’t find a good and straightforward guide for it.
+So here we go.
+What you will need A Linux server (VPS)." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://workingtitle.pro/posts/simple-squid-proxy-server-with-basic-authentication/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-08-01T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-08-01T00:00:00+00:00" />
+
+    <meta itemprop="name" content="Simple squid proxy server with basic authentication">
+<meta itemprop="description" content="In previous posts I talked about setting up a double-proxy server using Squid. In this guide I’m gonna walk you through setting up a simple proxy server using Squid, and apply a simple authentication method.
+The official Squid documentation on this issue is very vague and all over the place and I couldn’t find a good and straightforward guide for it.
+So here we go.
+What you will need A Linux server (VPS)."><meta itemprop="datePublished" content="2020-08-01T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2020-08-01T00:00:00+00:00" />
+<meta itemprop="wordCount" content="560">
+<meta itemprop="keywords" content="" />
+    
+    <link rel="canonical" href="https://workingtitle.pro/posts/simple-squid-proxy-server-with-basic-authentication/">
+    <link rel="icon" href="https://workingtitle.pro/assets/favicon.ico">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    <link href="https://www.google-analytics.com" rel="preconnect" crossorigin>
+    <link rel="alternate" type="application/atom+xml" title="$ root@workingtitle.pro" href="https://workingtitle.pro/atom.xml" />
+    <link rel="alternate" type="application/json" title="$ root@workingtitle.pro" href="https://workingtitle.pro/feed.json" />
+    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=">
+    
+    <style>*,:after,:before{box-sizing:border-box;padding:0}body{font:1rem/1.5 '-apple-system',BlinkMacSystemFont,avenir next,avenir,helvetica,helvetica neue,ubuntu,roboto,noto,segoe ui,arial,sans-serif;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding:2rem;background:#f5f5f5;color:#000}.skip-link{position:absolute;top:-40px;left:0;background:#eee;z-index:100}.skip-link:focus{top:0}h1,h2,h3,h4,h5,strong,b{font-size:inherit;font-weight:600}header{line-height:2;padding-bottom:1.5rem}.link{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none}.time{font-variant-numeric:tabular-nums;white-space:nowrap}blockquote{border-left:5px solid #eee;padding-left:1rem;margin:0}a,a:visited{color:inherit}a:hover,a.heading-link{text-decoration:none}pre{padding:.5rem;overflow:auto;overflow-x:scroll;overflow-wrap:normal}code,pre{font-family:San Francisco Mono,Monaco,consolas,lucida console,dejavu sans mono,bitstream vera sans mono,monospace;font-size:normal;font-size:small;background:#eee}code{margin:.1rem;border:none}ul{list-style-type:square}ul,ol{padding-left:1.2rem}.list{line-height:2;list-style-type:none;padding-left:0}.list li{padding-bottom:.1rem}.meta{color:#777}.content{max-width:70ch;margin:0 auto}header{line-height:2;display:flex;justify-content:space-between;padding-bottom:1rem}header a{text-decoration:none}header ul{list-style-type:none;padding:0}header li,header a{display:inline}h2.post{padding-top:.5rem}header ul a:first-child{padding-left:1rem}.nav{height:1px;background:#000;content:'';max-width:10%}.list li{display:flex;align-items:baseline}.list li time{flex:initial}.hr-list{margin-top:0;margin-bottom:0;margin-right:.5rem;margin-left:.5rem;height:1px;border:0;flex:1 0 1rem}.m,hr{border:0;margin:3rem 0}img{max-width:100%;height:auto}.post-date{margin:5% 0}.index-date{color:#9a9a9a}.animate-blink{animation:opacity 1s infinite;opacity:1}@keyframes opacity{0%{opacity:1}50%{opacity:.5}100%{opacity:0}}.tags{display:flex;justify-content:space-between}.tags ul{padding:0;margin:0}.tags li{display:inline}.avatar{height:120px;width:120px;position:relative;margin:-10px 0 0 15px;float:right;border-radius:50%}</style>
+  
+    
+  
+  
+  <script type="application/ld+json">
+  {
+      "@context": "http://schema.org",
+      "@type": "BlogPosting",
+      "articleSection": "posts",
+      "name": "Simple squid proxy server with basic authentication",
+      "headline": "Simple squid proxy server with basic authentication",
+      "alternativeHeadline": "",
+      "description": "In previous posts I talked about setting up a double-proxy server using Squid. In this guide I’m gonna walk you through setting up a simple proxy server using Squid, and apply a simple authentication method.\nThe official Squid documentation on this issue is very vague and all over the place and I couldn’t find a good and straightforward guide for it.\nSo here we go.\nWhat you will need A Linux server (VPS).",
+      "inLanguage": "en-us",
+      "isFamilyFriendly": "true",
+      "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https:\/\/workingtitle.pro\/posts\/simple-squid-proxy-server-with-basic-authentication\/"
+      },
+      "author" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "creator" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "accountablePerson" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "copyrightHolder" : "$ root@workingtitle.pro",
+      "copyrightYear" : "2020",
+      "dateCreated": "2020-08-01T00:00:00.00Z",
+      "datePublished": "2020-08-01T00:00:00.00Z",
+      "dateModified": "2020-08-01T00:00:00.00Z",
+      "publisher":{
+          "@type":"Organization",
+          "name": "$ root@workingtitle.pro",
+          "url": "https://workingtitle.pro",
+          "logo": {
+              "@type": "ImageObject",
+              "url": "https:\/\/workingtitle.pro\/assets\/favicon.ico",
+              "width":"32",
+              "height":"32"
+          }
+      },
+      "image": "https://workingtitle.pro/assets/favicon.ico",
+      "url" : "https:\/\/workingtitle.pro\/posts\/simple-squid-proxy-server-with-basic-authentication\/",
+      "wordCount" : "560",
+      "genre" : [ ],
+      "keywords" : [ ]
+  }
+  </script>
+  
+  
+  </head>
+<body>
+  <a class="skip-link" href="#main">Skip to main</a>
+  <main id="main">
+  <div class="content">
+    <header>
+<p style="padding: 0;margin: 0;">
+  <a href="/">
+    <b>$ root@workingtitle.pro</b>
+    <span class="text-stone-500 animate-blink">▮</span>
+  </a>
+</p>
+<ul style="padding: 0;margin: 0;">
+  
+  
+  <li class="">
+    <a href="/posts/"><span>Post</span></a>
+    
+  <li class="">
+    <a href="/about/"><span>About</span></a>
+    
+  </li>
+</ul>
+</header>
+<hr class="hr-list" style="padding: 0;margin: 0;">
+    <section>
+      <h2 class="post">Simple squid proxy server with basic authentication</h2>
+      <p>In previous posts I talked about setting up a double-proxy server using Squid. In this guide I’m gonna walk you through setting up a simple proxy server using Squid, and apply a simple authentication method.</p>
+<p>The official <a href="http://www.squid-cache.org/">Squid</a> documentation on this issue is very vague and all over the place and I couldn’t find a good and straightforward guide for it.</p>
+<p>So here we go.</p>
+<br>
+<h2 id="what-you-will-need">What you will need</h2>
+<ul>
+<li>A Linux server (VPS). In this example I’m using a CentOS 7 machine but the steps should generally be the same on different distributions.</li>
+<li>A valid IP address</li>
+</ul>
+<br>
+<h2 id="installing-squid">Installing Squid</h2>
+<p>The first step is to install Squid on your machine. Use the following command on CentOS.</p>
+<p>First update your repositories via this command:</p>
+<pre tabindex="0"><code>sudo yum -y update
+</code></pre><p>Then install squid:</p>
+<pre tabindex="0"><code>yum -y install squid
+</code></pre><p>Start squid and enable it for system startup:</p>
+<pre tabindex="0"><code>csystemctl start squid
+systemctl enable squid
+</code></pre><br>
+<h2 id="squid-configuration">Squid configuration</h2>
+<h3 id="create-a-user-for-squid">Create a User for Squid</h3>
+<p>The first thing you’ll need to do is to set up a username and password for connecting to the proxy server. The username information for Squid is stored in this file:</p>
+<pre tabindex="0"><code>nano /etc/squid/passwd
+</code></pre><p>Create a new user with this command:</p>
+<pre tabindex="0"><code>sudo htpasswd /etc/squid/passwd [username-here]
+</code></pre><p>After entering the command a prompt shows up for defining new password. Enter your password and make sure to save this password because you will need it.</p>
+<h3 id="edit-the-configuration-file">Edit the configuration file</h3>
+<p>Now we need to make the changes to the main squid configuration file. Open the file with your favorite text editor:</p>
+<pre tabindex="0"><code>nano /etc/squid/squid.conf
+</code></pre><p>Leave the default configuration in place (you might need them later) but add the following lines to the beginning of the file:</p>
+<pre tabindex="0"><code>auth_param basic program /usr/lib64/squid/basic_ncsa_auth /etc/squid/passwd
+auth_param basic children 5
+auth_param basic realm Squid Basic Authentication
+auth_param basic credentialsttl 2 hours
+acl auth_users proxy_auth REQUIRED
+http_access allow auth_users
+</code></pre><p><code>/usr/lib64/squid/basic_ncsa_auth</code> is the library we’re using for authentication and the accepted user list is found at <code>/etc/squid/passwd</code> which we defined a user for early on.</p>
+<p>Next add the following line to configuration:</p>
+<pre tabindex="0"><code>acl localnet src 0.0.0.0/8
+</code></pre><p>This tells Squid to accept connections from any IP. (After authentication). I added this because I want to be able to connect to the server from any location.</p>
+<p>Another important section is the port configuration. In my case, Squid only seemed to be listening on IPv6 which was not ideal. So in order to change it I had to edit this section:</p>
+<pre tabindex="0"><code>http_port 3128
+</code></pre><p>In order to let Squid know you want it to listen on IPv4 add the IP 0.0.0.0 in front of it. As so:</p>
+<pre tabindex="0"><code>http_port 0.0.0.0:3128
+</code></pre><p>After this, save the configuration file and restart Squid:</p>
+<pre tabindex="0"><code>service squid restart
+</code></pre><br>
+<h2 id="firewall-configuration">Firewall configuration</h2>
+<p>If you have firewall on your server, you’ll have to open the port 3128.</p>
+<p>Use the following command on CentOS:</p>
+<pre tabindex="0"><code>sudo firewall-cmd --zone=external --permanent --add-port=3128/tcp
+sudo firewall-cmd --zone=external --permanent --add-port=3128/udp
+sudo firewall-cmd --reload
+</code></pre><p>If you’re not using firewall-cmd, you’ll have to open the port using <code>iptables</code>.</p>
+<pre tabindex="0"><code>sudo iptables -A INPUT -p tcp --dport 3128 -j ACCEPT
+sudo iptables -A INPUT -p udp --dport 3128 -j ACCEPT
+service iptables save
+</code></pre><p>And that’s all. Everything is set now. Restart Squid and you should be good to go.</p>
+<pre tabindex="0"><code>service squid restart
+</code></pre><p>If you’re having trouble connecting, make sure to check the Squid logs at <code>/var/log/squid/</code></p>
+<p>If you have any questions you can leave a comment on this post or email me at <a href="mailto:admin@workingtitle.pro">admin@workingtitle.pro</a></p>
+
+      
+      <div class="post-date">
+        <span class="g time">August 1, 2020 </span> &#8729;
+         
+      </div>
+      
+    </section>
+    
+    <div id="comments">
+      <script src="https://utteranc.es/client.js"
+    repo=ali-foroughi/workingtitle.pro
+    issue-term="pathname"
+    theme=github-light
+    crossorigin="anonymous"
+    async>
+</script>
+
+    </div>
+    
+  </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Liste - https://workingtitle.pro">
+    <title>How to Recover a MySQL Database With frm and .ibd Files | $ root@workingtitle.pro</title>
+    <meta name="description" content="A minimal hugo theme focus on content">
+    <meta property="og:title" content="How to Recover a MySQL Database With frm and .ibd Files" />
+<meta property="og:description" content="In order to recover a MySQL database, you need to have access to the .frm and .ibd files. I won’t get into how to acquire them, but if you have them, you can follow these steps to recover your database. (at least partially)
+What you’ll need .frm and .ibd files related to your database A server running the same version of MySQL as the database you want to restore Recover database structure First thing we need to do is recover the database structure by using mysqlfrm" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://workingtitle.pro/posts/how-to-recover-a-mysql-database-with-frm-and-ibd-files/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2022-05-28T00:00:00+00:00" />
+<meta property="article:modified_time" content="2022-05-28T00:00:00+00:00" />
+
+    <meta itemprop="name" content="How to Recover a MySQL Database With frm and .ibd Files">
+<meta itemprop="description" content="In order to recover a MySQL database, you need to have access to the .frm and .ibd files. I won’t get into how to acquire them, but if you have them, you can follow these steps to recover your database. (at least partially)
+What you’ll need .frm and .ibd files related to your database A server running the same version of MySQL as the database you want to restore Recover database structure First thing we need to do is recover the database structure by using mysqlfrm"><meta itemprop="datePublished" content="2022-05-28T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2022-05-28T00:00:00+00:00" />
+<meta itemprop="wordCount" content="536">
+<meta itemprop="keywords" content="" />
+    
+    <link rel="canonical" href="https://workingtitle.pro/posts/how-to-recover-a-mysql-database-with-frm-and-ibd-files/">
+    <link rel="icon" href="https://workingtitle.pro/assets/favicon.ico">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    <link href="https://www.google-analytics.com" rel="preconnect" crossorigin>
+    <link rel="alternate" type="application/atom+xml" title="$ root@workingtitle.pro" href="https://workingtitle.pro/atom.xml" />
+    <link rel="alternate" type="application/json" title="$ root@workingtitle.pro" href="https://workingtitle.pro/feed.json" />
+    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=">
+    
+    <style>*,:after,:before{box-sizing:border-box;padding:0}body{font:1rem/1.5 '-apple-system',BlinkMacSystemFont,avenir next,avenir,helvetica,helvetica neue,ubuntu,roboto,noto,segoe ui,arial,sans-serif;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding:2rem;background:#f5f5f5;color:#000}.skip-link{position:absolute;top:-40px;left:0;background:#eee;z-index:100}.skip-link:focus{top:0}h1,h2,h3,h4,h5,strong,b{font-size:inherit;font-weight:600}header{line-height:2;padding-bottom:1.5rem}.link{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none}.time{font-variant-numeric:tabular-nums;white-space:nowrap}blockquote{border-left:5px solid #eee;padding-left:1rem;margin:0}a,a:visited{color:inherit}a:hover,a.heading-link{text-decoration:none}pre{padding:.5rem;overflow:auto;overflow-x:scroll;overflow-wrap:normal}code,pre{font-family:San Francisco Mono,Monaco,consolas,lucida console,dejavu sans mono,bitstream vera sans mono,monospace;font-size:normal;font-size:small;background:#eee}code{margin:.1rem;border:none}ul{list-style-type:square}ul,ol{padding-left:1.2rem}.list{line-height:2;list-style-type:none;padding-left:0}.list li{padding-bottom:.1rem}.meta{color:#777}.content{max-width:70ch;margin:0 auto}header{line-height:2;display:flex;justify-content:space-between;padding-bottom:1rem}header a{text-decoration:none}header ul{list-style-type:none;padding:0}header li,header a{display:inline}h2.post{padding-top:.5rem}header ul a:first-child{padding-left:1rem}.nav{height:1px;background:#000;content:'';max-width:10%}.list li{display:flex;align-items:baseline}.list li time{flex:initial}.hr-list{margin-top:0;margin-bottom:0;margin-right:.5rem;margin-left:.5rem;height:1px;border:0;flex:1 0 1rem}.m,hr{border:0;margin:3rem 0}img{max-width:100%;height:auto}.post-date{margin:5% 0}.index-date{color:#9a9a9a}.animate-blink{animation:opacity 1s infinite;opacity:1}@keyframes opacity{0%{opacity:1}50%{opacity:.5}100%{opacity:0}}.tags{display:flex;justify-content:space-between}.tags ul{padding:0;margin:0}.tags li{display:inline}.avatar{height:120px;width:120px;position:relative;margin:-10px 0 0 15px;float:right;border-radius:50%}</style>
+  
+    
+  
+  
+  <script type="application/ld+json">
+  {
+      "@context": "http://schema.org",
+      "@type": "BlogPosting",
+      "articleSection": "posts",
+      "name": "How to Recover a MySQL Database With frm and .ibd Files",
+      "headline": "How to Recover a MySQL Database With frm and .ibd Files",
+      "alternativeHeadline": "",
+      "description": "In order to recover a MySQL database, you need to have access to the .frm and .ibd files. I won’t get into how to acquire them, but if you have them, you can follow these steps to recover your database. (at least partially)\nWhat you’ll need .frm and .ibd files related to your database A server running the same version of MySQL as the database you want to restore Recover database structure First thing we need to do is recover the database structure by using mysqlfrm",
+      "inLanguage": "en-us",
+      "isFamilyFriendly": "true",
+      "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https:\/\/workingtitle.pro\/posts\/how-to-recover-a-mysql-database-with-frm-and-ibd-files\/"
+      },
+      "author" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "creator" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "accountablePerson" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "copyrightHolder" : "$ root@workingtitle.pro",
+      "copyrightYear" : "2022",
+      "dateCreated": "2022-05-28T00:00:00.00Z",
+      "datePublished": "2022-05-28T00:00:00.00Z",
+      "dateModified": "2022-05-28T00:00:00.00Z",
+      "publisher":{
+          "@type":"Organization",
+          "name": "$ root@workingtitle.pro",
+          "url": "https://workingtitle.pro",
+          "logo": {
+              "@type": "ImageObject",
+              "url": "https:\/\/workingtitle.pro\/assets\/favicon.ico",
+              "width":"32",
+              "height":"32"
+          }
+      },
+      "image": "https://workingtitle.pro/assets/favicon.ico",
+      "url" : "https:\/\/workingtitle.pro\/posts\/how-to-recover-a-mysql-database-with-frm-and-ibd-files\/",
+      "wordCount" : "536",
+      "genre" : [ ],
+      "keywords" : [ ]
+  }
+  </script>
+  
+  
+  </head>
+<body>
+  <a class="skip-link" href="#main">Skip to main</a>
+  <main id="main">
+  <div class="content">
+    <header>
+<p style="padding: 0;margin: 0;">
+  <a href="/">
+    <b>$ root@workingtitle.pro</b>
+    <span class="text-stone-500 animate-blink">▮</span>
+  </a>
+</p>
+<ul style="padding: 0;margin: 0;">
+  
+  
+  <li class="">
+    <a href="/posts/"><span>Post</span></a>
+    
+  <li class="">
+    <a href="/about/"><span>About</span></a>
+    
+  </li>
+</ul>
+</header>
+<hr class="hr-list" style="padding: 0;margin: 0;">
+    <section>
+      <h2 class="post">How to Recover a MySQL Database With frm and .ibd Files</h2>
+      <p>In order to recover a MySQL database, you need to have access to the .frm and .ibd files. I won’t get into how to acquire them, but if you have them, you can follow these steps to recover your database. (at least partially)</p>
+<br>
+<h2 id="what-youll-need">What you’ll need</h2>
+<ul>
+<li>.frm and .ibd files related to your database</li>
+<li>A server running the same version of MySQL as the database you want to restore</li>
+</ul>
+<br>
+<h2 id="recover-database-structure">Recover database structure</h2>
+<p>First thing we need to do is recover the database structure by using <code>mysqlfrm</code></p>
+<p><a href="https://helpmanual.io/help/mysqlfrm/">mysqlfrm</a> is a utility use to read .frm files and create the database structure based on those files. Here’s the steps:</p>
+<p>Run mysqlfrm under the diagnostic mode to get the table structure.</p>
+<pre tabindex="0"><code>mysqlfrm --diagnostic TABLE_NAME.frm &gt; TABLE_NAME.txt
+</code></pre><p>This table will create the database structure (the mysql CREATE comands) and store them in a text file for reference. If you look into the txt file you’ll see an output like this:</p>
+<pre tabindex="0"><code>CREATE TABLE `wp_users` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT, 
+  `user_login` varchar(128) NOT NULL, 
+  `user_pass` varchar(128) NOT NULL, 
+  `user_nicename` varchar(128) NOT NULL, 
+  `user_email` varchar(64) NOT NULL, 
+  `user_url` varchar(128) NOT NULL, 
+  `user_registered` datetime NOT NULL, 
+  `user_activation_key` varchar(1020) NOT NULL, 
+  `user_status` int(11) NOT NULL, 
+  `display_name` varchar(1000) NOT NULL, 
+PRIMARY KEY `PRIMARY` (`ID`),
+KEY `user_login_key` (`user_login`),
+KEY `user_nicename` (`user_nicename`),
+KEY `user_email` (`user_email`)
+) ENGINE=InnoDB
+  ROW_FORMAT=compact;
+</code></pre><br>
+<h2 id="create-the-database-on-mysql">Create the database on MySQL</h2>
+<p>Log into your MySQL server and create the MySQL database where you want the files to be restored. Take note that your MySQL query for creating the database has to include the default character set and collate. Here’s how I made my database:</p>
+<pre tabindex="0"><code>CREATE DATABASE my_database DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_general_ci;
+</code></pre><br>
+<h2 id="create-table-and-import-the-ibd-file">Create table and import the .ibd file</h2>
+<p>Now we need to create the table using the .frm file that we extracted. Select the database and run your CREATE command that was included in the <code>TABLE_NAME.txt</code></p>
+<pre tabindex="0"><code>mysql &gt; USE my_database;
+mysql &gt; CREATE TABLE `wp_users` (
+  `ID` bigint(20) unsigned NOT NULL AUTO_INCREMENT, 
+  `user_login` varchar(128) NOT NULL, 
+  `user_pass` varchar(128) NOT NULL, 
+  `user_nicename` varchar(128) NOT NULL, 
+  `user_email` varchar(64) NOT NULL, 
+  `user_url` varchar(128) NOT NULL, 
+  `user_registered` datetime NOT NULL, 
+  `user_activation_key` varchar(1020) NOT NULL, 
+  `user_status` int(11) NOT NULL, 
+  `display_name` varchar(1000) NOT NULL, 
+PRIMARY KEY `PRIMARY` (`ID`),
+KEY `user_login_key` (`user_login`),
+KEY `user_nicename` (`user_nicename`),
+KEY `user_email` (`user_email`)
+) ENGINE=InnoDB
+  ROW_FORMAT=compact;
+</code></pre><p>Now we need to drop the .ibd file that’s created with the above command and replace it with the .ibd file we already have.</p>
+<pre tabindex="0"><code>ALTER TABLE table_name DISCARD TABLESPACE;
+</code></pre><p>Copy your own .ibd file to the directory where the database resides. On an ubuntu/debian server that directory would be:</p>
+<pre tabindex="0"><code>/var/lib/mysql
+</code></pre><p>now we need to import the new .ibd file for the table we just created:</p>
+<pre tabindex="0"><code>ALTER TABLE table_name IMPORT TABLESPACE;
+</code></pre><p>You should see a message that the query was successfully executed.</p>
+<p>Repeat the same steps for every single table. you could write a bash script to automatically run the same tasks for each table.
+<br></p>
+<h2 id="export-the-restored-database">Export the restored database</h2>
+<p>After following the steps for each of the tables, your database should be back to its original state. (more or less)</p>
+<p>There might be some data corruption, but you’ll likely get back most of the content.</p>
+<p>Run the following command to export your MySQL database:</p>
+<pre tabindex="0"><code>mysqldump my_database &gt; database_name_export.sql
+</code></pre>
+      
+      <div class="post-date">
+        <span class="g time">May 28, 2022 </span> &#8729;
+         
+      </div>
+      
+    </section>
+    
+    <div id="comments">
+      <script src="https://utteranc.es/client.js"
+    repo=ali-foroughi/workingtitle.pro
+    issue-term="pathname"
+    theme=github-light
+    crossorigin="anonymous"
+    async>
+</script>
+
+    </div>
+    
+  </div>
+</main>
+</body>
+</html>

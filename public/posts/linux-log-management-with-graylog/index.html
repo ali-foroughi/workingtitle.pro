@@ -1,0 +1,329 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Liste - https://workingtitle.pro">
+    <title>Linux Log Management With Graylog | $ root@workingtitle.pro</title>
+    <meta name="description" content="A minimal hugo theme focus on content">
+    <meta property="og:title" content="Linux Log Management With Graylog" />
+<meta property="og:description" content="I’ve been searching the web for a free and open-source log monitoring solution for Linux for a while now. I’ve tried everything from Nagios to Kibana. However I found out the best solution for me is Graylog. I basically just want to manage web server and mail server logs and get alerts if certain conditions are met. So Let’s take a look at Linux log management with Graylog.
+Although the official Graylog documentation is great, I’ve found out it has some shortcomings when it comes to explaining how to actually transfer the logs from your own servers to the intended master Graylog server, especially if you’ve never done this before (like me!" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://workingtitle.pro/posts/linux-log-management-with-graylog/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-05-19T00:00:00+00:00" />
+<meta property="article:modified_time" content="2021-05-19T00:00:00+00:00" />
+
+    <meta itemprop="name" content="Linux Log Management With Graylog">
+<meta itemprop="description" content="I’ve been searching the web for a free and open-source log monitoring solution for Linux for a while now. I’ve tried everything from Nagios to Kibana. However I found out the best solution for me is Graylog. I basically just want to manage web server and mail server logs and get alerts if certain conditions are met. So Let’s take a look at Linux log management with Graylog.
+Although the official Graylog documentation is great, I’ve found out it has some shortcomings when it comes to explaining how to actually transfer the logs from your own servers to the intended master Graylog server, especially if you’ve never done this before (like me!"><meta itemprop="datePublished" content="2021-05-19T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2021-05-19T00:00:00+00:00" />
+<meta itemprop="wordCount" content="1625">
+<meta itemprop="keywords" content="" />
+    
+    <link rel="canonical" href="https://workingtitle.pro/posts/linux-log-management-with-graylog/">
+    <link rel="icon" href="https://workingtitle.pro/assets/favicon.ico">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    <link href="https://www.google-analytics.com" rel="preconnect" crossorigin>
+    <link rel="alternate" type="application/atom+xml" title="$ root@workingtitle.pro" href="https://workingtitle.pro/atom.xml" />
+    <link rel="alternate" type="application/json" title="$ root@workingtitle.pro" href="https://workingtitle.pro/feed.json" />
+    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=">
+    
+    <style>*,:after,:before{box-sizing:border-box;padding:0}body{font:1rem/1.5 '-apple-system',BlinkMacSystemFont,avenir next,avenir,helvetica,helvetica neue,ubuntu,roboto,noto,segoe ui,arial,sans-serif;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding:2rem;background:#f5f5f5;color:#000}.skip-link{position:absolute;top:-40px;left:0;background:#eee;z-index:100}.skip-link:focus{top:0}h1,h2,h3,h4,h5,strong,b{font-size:inherit;font-weight:600}header{line-height:2;padding-bottom:1.5rem}.link{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none}.time{font-variant-numeric:tabular-nums;white-space:nowrap}blockquote{border-left:5px solid #eee;padding-left:1rem;margin:0}a,a:visited{color:inherit}a:hover,a.heading-link{text-decoration:none}pre{padding:.5rem;overflow:auto;overflow-x:scroll;overflow-wrap:normal}code,pre{font-family:San Francisco Mono,Monaco,consolas,lucida console,dejavu sans mono,bitstream vera sans mono,monospace;font-size:normal;font-size:small;background:#eee}code{margin:.1rem;border:none}ul{list-style-type:square}ul,ol{padding-left:1.2rem}.list{line-height:2;list-style-type:none;padding-left:0}.list li{padding-bottom:.1rem}.meta{color:#777}.content{max-width:70ch;margin:0 auto}header{line-height:2;display:flex;justify-content:space-between;padding-bottom:1rem}header a{text-decoration:none}header ul{list-style-type:none;padding:0}header li,header a{display:inline}h2.post{padding-top:.5rem}header ul a:first-child{padding-left:1rem}.nav{height:1px;background:#000;content:'';max-width:10%}.list li{display:flex;align-items:baseline}.list li time{flex:initial}.hr-list{margin-top:0;margin-bottom:0;margin-right:.5rem;margin-left:.5rem;height:1px;border:0;flex:1 0 1rem}.m,hr{border:0;margin:3rem 0}img{max-width:100%;height:auto}.post-date{margin:5% 0}.index-date{color:#9a9a9a}.animate-blink{animation:opacity 1s infinite;opacity:1}@keyframes opacity{0%{opacity:1}50%{opacity:.5}100%{opacity:0}}.tags{display:flex;justify-content:space-between}.tags ul{padding:0;margin:0}.tags li{display:inline}.avatar{height:120px;width:120px;position:relative;margin:-10px 0 0 15px;float:right;border-radius:50%}</style>
+  
+    
+  
+  
+  <script type="application/ld+json">
+  {
+      "@context": "http://schema.org",
+      "@type": "BlogPosting",
+      "articleSection": "posts",
+      "name": "Linux Log Management With Graylog",
+      "headline": "Linux Log Management With Graylog",
+      "alternativeHeadline": "",
+      "description": "I’ve been searching the web for a free and open-source log monitoring solution for Linux for a while now. I’ve tried everything from Nagios to Kibana. However I found out the best solution for me is Graylog. I basically just want to manage web server and mail server logs and get alerts if certain conditions are met. So Let’s take a look at Linux log management with Graylog.\nAlthough the official Graylog documentation is great, I’ve found out it has some shortcomings when it comes to explaining how to actually transfer the logs from your own servers to the intended master Graylog server, especially if you’ve never done this before (like me!",
+      "inLanguage": "en-us",
+      "isFamilyFriendly": "true",
+      "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https:\/\/workingtitle.pro\/posts\/linux-log-management-with-graylog\/"
+      },
+      "author" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "creator" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "accountablePerson" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "copyrightHolder" : "$ root@workingtitle.pro",
+      "copyrightYear" : "2021",
+      "dateCreated": "2021-05-19T00:00:00.00Z",
+      "datePublished": "2021-05-19T00:00:00.00Z",
+      "dateModified": "2021-05-19T00:00:00.00Z",
+      "publisher":{
+          "@type":"Organization",
+          "name": "$ root@workingtitle.pro",
+          "url": "https://workingtitle.pro",
+          "logo": {
+              "@type": "ImageObject",
+              "url": "https:\/\/workingtitle.pro\/assets\/favicon.ico",
+              "width":"32",
+              "height":"32"
+          }
+      },
+      "image": "https://workingtitle.pro/assets/favicon.ico",
+      "url" : "https:\/\/workingtitle.pro\/posts\/linux-log-management-with-graylog\/",
+      "wordCount" : "1625",
+      "genre" : [ ],
+      "keywords" : [ ]
+  }
+  </script>
+  
+  
+  </head>
+<body>
+  <a class="skip-link" href="#main">Skip to main</a>
+  <main id="main">
+  <div class="content">
+    <header>
+<p style="padding: 0;margin: 0;">
+  <a href="/">
+    <b>$ root@workingtitle.pro</b>
+    <span class="text-stone-500 animate-blink">▮</span>
+  </a>
+</p>
+<ul style="padding: 0;margin: 0;">
+  
+  
+  <li class="">
+    <a href="/posts/"><span>Post</span></a>
+    
+  <li class="">
+    <a href="/about/"><span>About</span></a>
+    
+  </li>
+</ul>
+</header>
+<hr class="hr-list" style="padding: 0;margin: 0;">
+    <section>
+      <h2 class="post">Linux Log Management With Graylog</h2>
+      <p>I’ve been searching the web for a free and open-source log monitoring solution for Linux for a while now. I’ve tried everything from Nagios to Kibana. However I found out the best solution for me is Graylog. I basically just want to manage web server and mail server logs and get alerts if certain conditions are met. So Let’s take a look at Linux log management with Graylog.</p>
+<p>Although the official Graylog documentation is great, I’ve found out it has some shortcomings when it comes to explaining how to actually transfer the logs from your own servers to the intended master Graylog server, especially if you’ve never done this before (like me!). If you’re not familiar with Syslog for example, you’re gonna have a hard time configuration just by following the official docs. That’s why I wanted to document how I approached it which is very bare bones and simple.</p>
+<br>
+<h2 id="getting-started">Getting Started</h2>
+<p>So here’s what we’re going to do. We’re planning to transfer all of our logs from a server to a Graylog node, using Rsyslog as the transfer protocol.</p>
+<p>For setting up a Graylog node we’re going to use a Ubuntu 20.04 virtual machine with 2 Gigabytes of ram and 2 CPU cores. Keep in mind that this is just for testing purposes. In a production environment, you’re going to need a much more powerful server, most likely dedicated.</p>
+<br>
+<h2 id="installing-graylog-on-ubuntu-2004">Installing Graylog on Ubuntu 20.04</h2>
+<p>First we’re going to start by installing the prerequisite packages. Run the following commands:</p>
+<pre tabindex="0"><code>sudo apt-get update &amp;&amp; sudo apt-get upgrade
+sudo apt-get install apt-transport-https openjdk-8-jre-headless uuid-runtime pwgen
+</code></pre><p>If you get a “package not found” error, you need to add the universe repositry as so:</p>
+<pre tabindex="0"><code>sudo add-apt-repository universe
+sudo apt-get update &amp;&amp; sudo apt-get upgrade
+sudo apt-get install apt-transport-https openjdk-8-jre-headless uuid-runtime pwgen
+</code></pre><h2 id="install-mongodb">Install MongoDB</h2>
+<p>Next step is to install MongoDB via the following commands:</p>
+<pre tabindex="0"><code>sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 9DA31620334BD75D9DCB49F368818C72E52529D4
+echo &#34;deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.0 multiverse&#34; | sudo tee /etc/apt/sources.list.d/mongodb-org-4.0.list
+sudo apt-get update
+sudo apt-get install -y mongodb-org
+</code></pre><p>After the installation is complete, enable it and verify its running correctly.</p>
+<pre tabindex="0"><code>sudo systemctl daemon-reload
+sudo systemctl enable mongod.service
+sudo systemctl restart mongod.service
+sudo systemctl --type=service --state=active | grep mongod
+</code></pre><h2 id="install-elasticsearch">Install Elasticsearch</h2>
+<p>Graylog uses Elasticsearch 7 to manage the logs. You can install it via the following commands.</p>
+<pre tabindex="0"><code>wget -q https://artifacts.elastic.co/GPG-KEY-elasticsearch -O myKey
+sudo apt-key add myKey
+echo &#34;deb https://artifacts.elastic.co/packages/oss-7.x/apt stable main&#34; | sudo tee -a /etc/apt/sources.list.d/elastic-7.x.list
+sudo apt-get update &amp;&amp; sudo apt-get install elasticsearch-oss
+</code></pre><p>Then make the following changes to the to the configuration file.</p>
+<pre tabindex="0"><code>$ sudo tee -a /etc/elasticsearch/elasticsearch.yml &gt; /dev/null &lt;&lt;EOT
+cluster.name: graylog
+action.auto_create_index: false
+EOT
+</code></pre><br>
+<h2 id="install-graylog">Install Graylog</h2>
+<p>Finally, we can add the Graylog repository and install it using these commands.</p>
+<pre tabindex="0"><code>$ wget https://packages.graylog2.org/repo/packages/graylog-4.0-repository_latest.deb
+$ sudo dpkg -i graylog-4.0-repository_latest.deb
+$ sudo apt-get update &amp;&amp; sudo apt-get install graylog-server graylog-enterprise-plugins graylog-integrations-plugins graylog-enterprise-integrations-plugins
+</code></pre><h2 id="edit-the-configuration-file">Edit the configuration file</h2>
+<p>There are a couple of changes we need to make to the Graylog configuration file before we can start it. Open the config file using your favorite text editor:</p>
+<pre tabindex="0"><code>sudo nano /etc/graylog/server/server.conf
+</code></pre><p>Here are the changes we need to make:</p>
+<ul>
+<li>Find the password_secret parameter. You can create a password for this section with this command: pwgen -N 1 -s 96
+    This parameter is used when creating a cluster for Graylog so make sure you save the password.</li>
+<li>root_password_sha2 has your desired password and save it here. Use this command to hash your password:
+    echo -n yourpassword | shasum -a 256
+    Definitely save this password. You will need it to log into the control panel.</li>
+<li>I would suggest specifying the time zone as well with the root_timezone</li>
+<li>You can also choose the username for the panel with the root_username directive, but this is not required. The default username is admin</li>
+<li>If you want to have access to the control panel from other locations, you need to change the http_bind_address. Change it from 127.0.0.0 to the IP address of your server</li>
+<h2 id="start-graylog">Start Graylog</h2>
+<p>Finally, we’re ready to start the Graylog server. Run the following commands.</p>
+<pre tabindex="0"><code>$ sudo systemctl daemon-reload
+$ sudo systemctl enable graylog-server.service
+$ sudo systemctl start graylog-server.service
+$ sudo systemctl --type=service --state=active | grep graylog
+</code></pre><br>
+<h2 id="server-firewall-configuration">Server Firewall configuration</h2>
+<p>There are at least two ports that need to be opened with this configuration. Depending on what protocol you use for transfer of logs , you might need to open the corresponding ports.</p>
+<p>On Ubuntu with the UFW firewall, you can open ports very easily like this:</p>
+<pre tabindex="0"><code>ufw allow 9000/tcp
+ufw allow 514/tcp
+</code></pre><p>Port 514 is the Rsyslog port which will be specified in the configuration. Port 9000 is the web interface for Graylog which we will get to later. If you’re using UDP for the transfer of the files, change the rules to UDP instead of TCP</p>
+<p>Reload the firewall to apply the rules:</p>
+<pre tabindex="0"><code>ufw reload
+</code></pre><p>Then check the configuration to make sure</p>
+<pre tabindex="0"><code>$ ufw status
+
+To                         Action      From
+--                         ------      ----
+9000/tcp                   ALLOW       Anywhere                  
+22/tcp                     ALLOW       Anywhere                  
+514/tcp                    ALLOW       Anywhere                  
+</code></pre><h2 id="client-configuration-with-rsyslog">Client configuration with Rsyslog</h2>
+<p>Rsyslog is a protocol for managing logs on Linux servers, and its installed by default on most distributions including Ubuntu. Using Rsyslog, we can transfer all or some of logs of a server to another server like Graylog so we can perform analysis.</p>
+<p>Here’s how I configured a CentOS server to send all of its logs to the Graylog server we just configured.</p>
+<p>First, navigate to the Rsyslog configuration directory:</p>
+<pre tabindex="0"><code>cd /etc/rsyslog.d
+</code></pre><p>Create a new configuration file and open it.</p>
+<pre tabindex="0"><code>nano 01-client.conf
+</code></pre><p>and copy the content below inside the file:</p>
+<pre tabindex="0"><code>## GTLS driver
+$DefaultNetstreamDriver gtls
+# Certificates
+$DefaultNetstreamDriverCAFile /etc/ssl/rsyslog/CA.pem
+$DefaultNetstreamDriverCertFile /etc/ssl/rsyslog/client-cert.pem
+$DefaultNetstreamDriverKeyFile /etc/ssl/rsyslog/client-key.pem
+# Auth mode
+$ActionSendStreamDriverAuthMode x509/name
+$ActionSendStreamDriverPermittedPeer [server-hostname]
+# Only use TLS
+$ActionSendStreamDriverMode 1
+# Forward everything to destination server
+*.* @@[server-IP]:514
+</code></pre><p>The key setting here is the SSL keys. It is highly encouraged to use SSL to transfer the logs across the network. If you don’t use SSL, the log will transfer in a clear-text format and can be readable by anyone who has access to either nodes, or has access to your network in transit. (e.g your ISP).</p>
+<p>Issue two SSL certificates for your hostname. One for your server and one for client. For example server.yourdomain.com and client.yourdomain.com. If your server and client on part of the same domain, you could use a single Wild Card certificate for both.</p>
+<h2 id="start-rsyslog">Start Rsyslog</h2>
+<p>After your save the configuration file, make sure to install the <code>rsyslog-gnutls</code> package as well.</p>
+<pre tabindex="0"><code>apt install rsyslog-gnutls
+</code></pre><p>Finally restart Rsyslog to apply the configuration.</p>
+<pre tabindex="0"><code>systemctl restart rsyslog.service
+</code></pre><p>Now to make sure everything is running smoothly, check the status with this command. If there are any errors, you should see them.</p>
+<pre tabindex="0"><code>journalctl -f -u rsyslog
+</code></pre><br>
+<h2 id="graylog-web-interface-configuration">Graylog web interface configuration</h2>
+<p>Now that everything is setup and running smoothly (hopefully), we can begin receiving logs in the Graylog interface.</p>
+<p>Navigate to the web interface by opening the server IP via port 9000 in the URL bar of your browser:</p>
+<pre tabindex="0"><code>http://127.0.0.1:9000
+</code></pre><p>If you’ve defined your server IP in the configuration, replace it with 127.0.0.1</p>
+<p>If everything goes will you will be greeted with this page:
+<img
+  src="https://workingtitle.pro/images/graylog-web-interface.png"
+  alt="graylog-web-interface"
+  loading="lazy"
+  decoding="async"
+  class="full-width"
+/>
+
+</p>
+<p>Enter admin as the default username and the password you created in the configuration file under the root_password directive.</p>
+<br>
+<h2 id="adding-an-input-with-rsyslog">Adding an Input with Rsyslog</h2>
+<p>So far we’ve configured our client to send its log to the Graylog server, but we need to add that as an input in order to process it within Graylog.</p>
+<p>After logging in the Graylog interface, go to the System tab and click on Inputs.</p>
+<p>From the drop down menu, click &ldquo;Syslog TCP&rdquo; and then click the Launch &ldquo;New Input&rdquo; button.</p>
+<p><img
+  src="https://workingtitle.pro/images/graylog-new-input.png"
+  alt="graylog-new-input"
+  loading="lazy"
+  decoding="async"
+  class="full-width"
+/>
+
+</p>
+<ul>
+<li>The first field is your Graylog node. Since we only have a single Graylog server, you don’t need to select anything.</li>
+<li>In the Title filed just select a name for your input – for example Rsyslog.</li>
+<li>You can leave the IP on 0.0.0.0 sine we want to listen to Rsyslog inputs over the public IP.</li>
+<li>The default port for Rsyslog is 514 so leave this field unchanged.</li>
+<li>Important Note: In order to use port 514, you need to run Gray log as the root user which is not recommended. If Graylog isn’t running as root, port 514 won’t likely work. You can change it to something else for example 5514. However. make sure that you specify the new port in your client Rsyslog configuration file.</li>
+<li>Leave the rest of the fields at default setting.</li>
+</ul>
+<p><img
+  src="https://workingtitle.pro/images/graylog-new-input-part2.png"
+  alt="graylog-new-input-part2"
+  loading="lazy"
+  decoding="async"
+  class="full-width"
+/>
+
+</p>
+<ul>
+<li>TLS cert file: The path to the certificate file for your server.</li>
+<li>TLS private key: The path to the private key.</li>
+<li>The TLS client Auth Trusted Certs: The path to the CA certificate. Make sure to include the root certificate in this file as well because Graylog can’t retrieve it from the web.</li>
+</ul>
+<p>The rest of the configuration is up to you but only these mentioned parameters are crucial and needed.</p>
+<p>You’re not required to use *<strong><strong>LINK</strong></strong> SSL/TLS certificate, but if you don’t, all of your logs will be transferred in clear-text format which is far from ideal.</p>
+<p>After adding the input you should see this section with the input correctly running:</p>
+<p><img
+  src="https://workingtitle.pro/images/graylog-local-input.png"
+  alt="graylog-local-input"
+  loading="lazy"
+  decoding="async"
+  class="full-width"
+/>
+
+</p>
+<p>Now navigate to the homepage of Graylog and you should see the logs coming in:</p>
+<p><img
+  src="https://workingtitle.pro/images/graylog-dashboard.png"
+  alt="graylog-dashboard"
+  loading="lazy"
+  decoding="async"
+  class="full-width"
+/>
+
+</p>
+<br>
+<h2 id="conclusion">Conclusion</h2>
+<p>So that’s all! We now have full graylog node running and recieving inputs from Rsyslog on the node. You can continue to add new servers. Just forward the logs using the same method to the Ryslog port from the client.</p>
+<p>Based on personal experience I’ve found Linux log managment with Graylog to be the best for my intentions and the easiest.</p>
+<p>There is range of graphs and alert systems that you can create in Graylog which is well beyond the scope of this post. I suggest checking out the <a href="https://docs.graylog.org/en/4.0/">official docs</a> to get familiar with it, or just play around with the settings!</p>
+
+      
+      <div class="post-date">
+        <span class="g time">May 19, 2021 </span> &#8729;
+         
+      </div>
+      
+    </section>
+    
+    <div id="comments">
+      <script src="https://utteranc.es/client.js"
+    repo=ali-foroughi/workingtitle.pro
+    issue-term="pathname"
+    theme=github-light
+    crossorigin="anonymous"
+    async>
+</script>
+
+    </div>
+    
+  </div>
+</main>
+</body>
+</html>

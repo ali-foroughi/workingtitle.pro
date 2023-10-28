@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Liste - https://workingtitle.pro">
+    <title>Personal Cloud Storage Solution With Nextcloud | $ root@workingtitle.pro</title>
+    <meta name="description" content="A minimal hugo theme focus on content">
+    <meta property="og:title" content="Personal Cloud Storage Solution With Nextcloud" />
+<meta property="og:description" content="Ever wanted to have your own personal cloud storage space? I did. After I noticed my (free) Google Drive space running out.
+Googling “Personal cloud” brings up bunch of results, such as ownCloud that I tried to get started with but I found it unnecessarily complicated.
+The next best choice for a personal cloud storage is NextCloud, which is a completely free and open-source solution for setting up your own cloud storage server." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://workingtitle.pro/posts/personal-cloud-storage-solution-with-nextcloud/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-10-10T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-10-10T00:00:00+00:00" />
+
+    <meta itemprop="name" content="Personal Cloud Storage Solution With Nextcloud">
+<meta itemprop="description" content="Ever wanted to have your own personal cloud storage space? I did. After I noticed my (free) Google Drive space running out.
+Googling “Personal cloud” brings up bunch of results, such as ownCloud that I tried to get started with but I found it unnecessarily complicated.
+The next best choice for a personal cloud storage is NextCloud, which is a completely free and open-source solution for setting up your own cloud storage server."><meta itemprop="datePublished" content="2020-10-10T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2020-10-10T00:00:00+00:00" />
+<meta itemprop="wordCount" content="928">
+<meta itemprop="keywords" content="" />
+    
+    <link rel="canonical" href="https://workingtitle.pro/posts/personal-cloud-storage-solution-with-nextcloud/">
+    <link rel="icon" href="https://workingtitle.pro/assets/favicon.ico">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    <link href="https://www.google-analytics.com" rel="preconnect" crossorigin>
+    <link rel="alternate" type="application/atom+xml" title="$ root@workingtitle.pro" href="https://workingtitle.pro/atom.xml" />
+    <link rel="alternate" type="application/json" title="$ root@workingtitle.pro" href="https://workingtitle.pro/feed.json" />
+    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=">
+    
+    <style>*,:after,:before{box-sizing:border-box;padding:0}body{font:1rem/1.5 '-apple-system',BlinkMacSystemFont,avenir next,avenir,helvetica,helvetica neue,ubuntu,roboto,noto,segoe ui,arial,sans-serif;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding:2rem;background:#f5f5f5;color:#000}.skip-link{position:absolute;top:-40px;left:0;background:#eee;z-index:100}.skip-link:focus{top:0}h1,h2,h3,h4,h5,strong,b{font-size:inherit;font-weight:600}header{line-height:2;padding-bottom:1.5rem}.link{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none}.time{font-variant-numeric:tabular-nums;white-space:nowrap}blockquote{border-left:5px solid #eee;padding-left:1rem;margin:0}a,a:visited{color:inherit}a:hover,a.heading-link{text-decoration:none}pre{padding:.5rem;overflow:auto;overflow-x:scroll;overflow-wrap:normal}code,pre{font-family:San Francisco Mono,Monaco,consolas,lucida console,dejavu sans mono,bitstream vera sans mono,monospace;font-size:normal;font-size:small;background:#eee}code{margin:.1rem;border:none}ul{list-style-type:square}ul,ol{padding-left:1.2rem}.list{line-height:2;list-style-type:none;padding-left:0}.list li{padding-bottom:.1rem}.meta{color:#777}.content{max-width:70ch;margin:0 auto}header{line-height:2;display:flex;justify-content:space-between;padding-bottom:1rem}header a{text-decoration:none}header ul{list-style-type:none;padding:0}header li,header a{display:inline}h2.post{padding-top:.5rem}header ul a:first-child{padding-left:1rem}.nav{height:1px;background:#000;content:'';max-width:10%}.list li{display:flex;align-items:baseline}.list li time{flex:initial}.hr-list{margin-top:0;margin-bottom:0;margin-right:.5rem;margin-left:.5rem;height:1px;border:0;flex:1 0 1rem}.m,hr{border:0;margin:3rem 0}img{max-width:100%;height:auto}.post-date{margin:5% 0}.index-date{color:#9a9a9a}.animate-blink{animation:opacity 1s infinite;opacity:1}@keyframes opacity{0%{opacity:1}50%{opacity:.5}100%{opacity:0}}.tags{display:flex;justify-content:space-between}.tags ul{padding:0;margin:0}.tags li{display:inline}.avatar{height:120px;width:120px;position:relative;margin:-10px 0 0 15px;float:right;border-radius:50%}</style>
+  
+    
+  
+  
+  <script type="application/ld+json">
+  {
+      "@context": "http://schema.org",
+      "@type": "BlogPosting",
+      "articleSection": "posts",
+      "name": "Personal Cloud Storage Solution With Nextcloud",
+      "headline": "Personal Cloud Storage Solution With Nextcloud",
+      "alternativeHeadline": "",
+      "description": "Ever wanted to have your own personal cloud storage space? I did. After I noticed my (free) Google Drive space running out.\nGoogling “Personal cloud” brings up bunch of results, such as ownCloud that I tried to get started with but I found it unnecessarily complicated.\nThe next best choice for a personal cloud storage is NextCloud, which is a completely free and open-source solution for setting up your own cloud storage server.",
+      "inLanguage": "en-us",
+      "isFamilyFriendly": "true",
+      "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https:\/\/workingtitle.pro\/posts\/personal-cloud-storage-solution-with-nextcloud\/"
+      },
+      "author" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "creator" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "accountablePerson" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "copyrightHolder" : "$ root@workingtitle.pro",
+      "copyrightYear" : "2020",
+      "dateCreated": "2020-10-10T00:00:00.00Z",
+      "datePublished": "2020-10-10T00:00:00.00Z",
+      "dateModified": "2020-10-10T00:00:00.00Z",
+      "publisher":{
+          "@type":"Organization",
+          "name": "$ root@workingtitle.pro",
+          "url": "https://workingtitle.pro",
+          "logo": {
+              "@type": "ImageObject",
+              "url": "https:\/\/workingtitle.pro\/assets\/favicon.ico",
+              "width":"32",
+              "height":"32"
+          }
+      },
+      "image": "https://workingtitle.pro/assets/favicon.ico",
+      "url" : "https:\/\/workingtitle.pro\/posts\/personal-cloud-storage-solution-with-nextcloud\/",
+      "wordCount" : "928",
+      "genre" : [ ],
+      "keywords" : [ ]
+  }
+  </script>
+  
+  
+  </head>
+<body>
+  <a class="skip-link" href="#main">Skip to main</a>
+  <main id="main">
+  <div class="content">
+    <header>
+<p style="padding: 0;margin: 0;">
+  <a href="/">
+    <b>$ root@workingtitle.pro</b>
+    <span class="text-stone-500 animate-blink">▮</span>
+  </a>
+</p>
+<ul style="padding: 0;margin: 0;">
+  
+  
+  <li class="">
+    <a href="/posts/"><span>Post</span></a>
+    
+  <li class="">
+    <a href="/about/"><span>About</span></a>
+    
+  </li>
+</ul>
+</header>
+<hr class="hr-list" style="padding: 0;margin: 0;">
+    <section>
+      <h2 class="post">Personal Cloud Storage Solution With Nextcloud</h2>
+      <p>Ever wanted to have your own personal cloud storage space? I did. After I noticed my (free) Google Drive space running out.</p>
+<p>Googling “Personal cloud” brings up bunch of results, such as ownCloud that I tried to get started with but I found it unnecessarily complicated.</p>
+<p>The next best choice for a personal cloud storage is NextCloud, which is a completely free and open-source solution for setting up your own cloud storage server.</p>
+<p>Here’s what you need to setup NextCloud as a personal cloud storage:</p>
+<ul>
+<li>A Linux VPS, preferably running on Ubuntu 18.04 or Redhat 8. For this example I’m using CentOS 7 which is also fine.</li>
+<li>A valid IP</li>
+<li>Optional: DNS Server so you could set it up as a sub directory for your domain. For example: cloud.workingtitle.pro would be the address of your <li>server for the web interface.</li>
+<li>MySQL</li>
+<li>Apache</li>
+<li>PHP</li>
+</ul>
+<h2 id="getting-started-with-a-personal-cloud-storage">Getting started with a personal cloud storage</h2>
+<p>Firstly download the installation file from NextCloud’s website. Link found here.</p>
+<p>The first thing you need to do is to go ahead and update your server. You can do so via this command:</p>
+<pre tabindex="0"><code>sudo yum update
+</code></pre><p>Make sure that you have MySQL ready and have access for creating a database and giving permissions.</p>
+<p>You should also have Apache installed. If you don’t, install it via this command:</p>
+<pre tabindex="0"><code>yum install httpd
+</code></pre><h2 id="yum-install-httpd">yum install httpd</h2>
+<p>The next step is to install PHP on your server if you don’t already have it. To check if you have PHP installed or not run the following command:</p>
+<pre tabindex="0"><code>php -v
+</code></pre><p>If PHP is installed, you’ll get output showing the version, if its not your server will be confused.</p>
+<p>NextCloud recommends PHP version 7.3 or 7.4. So if don’t have it, go ahead and install using the following commands.</p>
+<p>First add the EPEL repository to your server:</p>
+<pre tabindex="0"><code>yum install epel-release yum-utils -y
+</code></pre><pre tabindex="0"><code>yum install http://rpms.remirepo.net/enterprise/remi-release-7.rpm
+</code></pre><p>Now add PHP 7.4 to your repository:</p>
+<pre tabindex="0"><code>yum-config-manager --enable remi-php74
+</code></pre><p>And finally install PHP and some of its core modules:</p>
+<pre tabindex="0"><code>yum install php php-common php-opcache php-mcrypt php-cli php-gd php-curl php-mysql -y
+</code></pre><p>After this PHP should be setup and ready to go.</p>
+<p>Now NextCloud requires bunch of different modules. The full list can be found here:</p>
+<pre tabindex="0"><code>PHP module ctype
+PHP module curl
+PHP module dom
+PHP module GD
+PHP module hash (only on FreeBSD)
+PHP module iconv
+PHP module JSON
+PHP module libxml (Linux package libxml2 must be &gt;=2.7.0)
+PHP module mbstring
+PHP module openssl
+PHP module posix
+PHP module session
+PHP module SimpleXML
+PHP module XMLReader
+PHP module XMLWriter
+PHP module zip
+PHP module zlib
+PHP module memcached
+PHP module imagick
+</code></pre><p>All of these should be included in the source tar.gz file that we install later, but that wasn’t the case for me and I had to install some of these manually.</p>
+<br>
+<h2 id="apache-configuration">Apache configuration</h2>
+<p>Create a file named <code>nextcloud.conf</code> under the directory <code>/etc/httpd/conf.d/</code> and add the following lines to the file:</p>
+<pre tabindex="0"><code>&lt;VirtualHost *:80&gt;
+  DocumentRoot /var/www/nextcloud/
+  ServerName  cloud.workingtitle.pro
+
+  &lt;Directory /var/www/nextcloud/&gt;
+    Require all granted
+    AllowOverride All
+    Options FollowSymLinks MultiViews
+
+    &lt;IfModule mod_dav.c&gt;
+      Dav off
+    &lt;/IfModule&gt;
+
+  &lt;/Directory&gt;
+</code></pre><p><code>DocumentRoot</code> is the path fo the NextCloud files and it’s up to you where you want to place it. Just create a directory of your choice and the download the installation files and extract them within that diectory. Then specify the path within this <code>nextcloud.conf</code> file.</p>
+<p>You should also change the <code>ServerName</code> section to the host name you want to set for your server. This is where the DNS server part I talked about comes into play. If you don’t know how to setup a DNS server, you can check out <b>my previous post</b>.</p>
+<br>
+<h2 id="installing-ssl">Installing SSL</h2>
+<p>The next step is to setup SSL for your domain. If you don’t know how, you can check my other guide about <b>setting up SSL on NGINX</b>.</p>
+<p>An easy and fast way is to use <a href="https://certbot.eff.org/">Certbot</a>. It helps you to setup a Let’s Encrypt SSL on your server that renews itself automatically. It’s very easy to install as it’s only a few clicks. It’s 2020, if you don’t have SSL then you should reevaluate your life as a system admin 🙂</p>
+<br>
+<h2 id="installation-wizard">Installation Wizard</h2>
+<p>Now we’re getting to the final stages. After you have configured Apache and installed SSL, restart it to make sure everything is okay.</p>
+<pre tabindex="0"><code>systemctl restart httpd
+</code></pre><p>Open the URL in your browser to continue with the web installation.</p>
+<pre tabindex="0"><code>http://localhost/nextcloud
+</code></pre><p>Type in the Administrator username and password of your choice. Then click on storage and database option to enter the database info.</p>
+<p>NextClould recommends to user MySQL as the database. So go on your server and and create a new database and user name and enter the information in the fields.</p>
+<p>Using SQLite is not recommended as it’s only intended for testing and educational purposes and not be used in a production environment.</p>
+<br>
+<h2 id="defining-trusted-domains">Defining trusted domains</h2>
+<p>By default only the domain name that’s entered in the Apache configuration will be allowed to access NextCloud. If you want to add another domain or subdomain you will have to manually add it to the trusted domains list.</p>
+<p>Open the config.php file. The syntax for the trusted domains is like this:</p>
+<pre tabindex="0"><code>&#39;trusted_domains&#39; =&gt;
+  array (
+   0 =&gt; &#39;localhost&#39;,
+   1 =&gt; &#39;cloud.workingtitle.pro&#39;,
+   2 =&gt; &#39;newDomain.workingtitle.pro&#39;,
+   3 =&gt; &#39;192.168.1.50&#39;,
+),
+</code></pre><p>With this configuration you can access Nextclould via localhost address, as well as the hostnames and the IP 192.168.1.50. You can add and subtract from this list as you wish.</p>
+<p>We’re done now. Open up the URL in your browser and you should see the login page.</p>
+<p>For further information regarding user creation and file sharing management, I suggest checking out the <a href="https://docs.nextcloud.com/server/20/admin_manual/index.html">Official documentation</a>.</p>
+
+      
+      <div class="post-date">
+        <span class="g time">October 10, 2020 </span> &#8729;
+         
+      </div>
+      
+    </section>
+    
+    <div id="comments">
+      <script src="https://utteranc.es/client.js"
+    repo=ali-foroughi/workingtitle.pro
+    issue-term="pathname"
+    theme=github-light
+    crossorigin="anonymous"
+    async>
+</script>
+
+    </div>
+    
+  </div>
+</main>
+</body>
+</html>

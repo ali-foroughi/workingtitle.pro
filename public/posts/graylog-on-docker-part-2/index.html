@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Liste - https://workingtitle.pro">
+    <title>Graylog on Docker — Part 2: MongoDB   | $ root@workingtitle.pro</title>
+    <meta name="description" content="A minimal hugo theme focus on content">
+    <meta property="og:title" content="Graylog on Docker — Part 2: MongoDB  " />
+<meta property="og:description" content="Now that we&rsquo;ve setup our Elasticsearch cluster in part one, we can move to the second stage which is setting up a MongoDB replica set.
+Configure MongoDB replica set On our master machine (docker swarm), we will be add a new docker compose which will be used for the MongoDB deployment.
+mongo.yaml version: &#34;3.8&#34; services: mongo-1: image: mongo volumes: - /data/mongo/mongo1:/data/db command: &#39;mongod --oplogSize 128 --replSet dbrs&#39; networks: - my-overlay-2 ports: - 27017:27017 deploy: placement: constraints: - node." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://workingtitle.pro/posts/graylog-on-docker-part-2/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2023-07-09T17:38:53+03:30" />
+<meta property="article:modified_time" content="2023-07-09T17:38:53+03:30" />
+
+    <meta itemprop="name" content="Graylog on Docker — Part 2: MongoDB  ">
+<meta itemprop="description" content="Now that we&rsquo;ve setup our Elasticsearch cluster in part one, we can move to the second stage which is setting up a MongoDB replica set.
+Configure MongoDB replica set On our master machine (docker swarm), we will be add a new docker compose which will be used for the MongoDB deployment.
+mongo.yaml version: &#34;3.8&#34; services: mongo-1: image: mongo volumes: - /data/mongo/mongo1:/data/db command: &#39;mongod --oplogSize 128 --replSet dbrs&#39; networks: - my-overlay-2 ports: - 27017:27017 deploy: placement: constraints: - node."><meta itemprop="datePublished" content="2023-07-09T17:38:53+03:30" />
+<meta itemprop="dateModified" content="2023-07-09T17:38:53+03:30" />
+<meta itemprop="wordCount" content="577">
+<meta itemprop="keywords" content="" />
+    
+    <link rel="canonical" href="https://workingtitle.pro/posts/graylog-on-docker-part-2/">
+    <link rel="icon" href="https://workingtitle.pro/assets/favicon.ico">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    <link href="https://www.google-analytics.com" rel="preconnect" crossorigin>
+    <link rel="alternate" type="application/atom+xml" title="$ root@workingtitle.pro" href="https://workingtitle.pro/atom.xml" />
+    <link rel="alternate" type="application/json" title="$ root@workingtitle.pro" href="https://workingtitle.pro/feed.json" />
+    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=">
+    
+    <style>*,:after,:before{box-sizing:border-box;padding:0}body{font:1rem/1.5 '-apple-system',BlinkMacSystemFont,avenir next,avenir,helvetica,helvetica neue,ubuntu,roboto,noto,segoe ui,arial,sans-serif;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding:2rem;background:#f5f5f5;color:#000}.skip-link{position:absolute;top:-40px;left:0;background:#eee;z-index:100}.skip-link:focus{top:0}h1,h2,h3,h4,h5,strong,b{font-size:inherit;font-weight:600}header{line-height:2;padding-bottom:1.5rem}.link{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none}.time{font-variant-numeric:tabular-nums;white-space:nowrap}blockquote{border-left:5px solid #eee;padding-left:1rem;margin:0}a,a:visited{color:inherit}a:hover,a.heading-link{text-decoration:none}pre{padding:.5rem;overflow:auto;overflow-x:scroll;overflow-wrap:normal}code,pre{font-family:San Francisco Mono,Monaco,consolas,lucida console,dejavu sans mono,bitstream vera sans mono,monospace;font-size:normal;font-size:small;background:#eee}code{margin:.1rem;border:none}ul{list-style-type:square}ul,ol{padding-left:1.2rem}.list{line-height:2;list-style-type:none;padding-left:0}.list li{padding-bottom:.1rem}.meta{color:#777}.content{max-width:70ch;margin:0 auto}header{line-height:2;display:flex;justify-content:space-between;padding-bottom:1rem}header a{text-decoration:none}header ul{list-style-type:none;padding:0}header li,header a{display:inline}h2.post{padding-top:.5rem}header ul a:first-child{padding-left:1rem}.nav{height:1px;background:#000;content:'';max-width:10%}.list li{display:flex;align-items:baseline}.list li time{flex:initial}.hr-list{margin-top:0;margin-bottom:0;margin-right:.5rem;margin-left:.5rem;height:1px;border:0;flex:1 0 1rem}.m,hr{border:0;margin:3rem 0}img{max-width:100%;height:auto}.post-date{margin:5% 0}.index-date{color:#9a9a9a}.animate-blink{animation:opacity 1s infinite;opacity:1}@keyframes opacity{0%{opacity:1}50%{opacity:.5}100%{opacity:0}}.tags{display:flex;justify-content:space-between}.tags ul{padding:0;margin:0}.tags li{display:inline}.avatar{height:120px;width:120px;position:relative;margin:-10px 0 0 15px;float:right;border-radius:50%}</style>
+  
+    
+  
+  
+  <script type="application/ld+json">
+  {
+      "@context": "http://schema.org",
+      "@type": "BlogPosting",
+      "articleSection": "posts",
+      "name": "Graylog on Docker — Part 2: MongoDB  ",
+      "headline": "Graylog on Docker — Part 2: MongoDB  ",
+      "alternativeHeadline": "",
+      "description": "Now that we\u0026rsquo;ve setup our Elasticsearch cluster in part one, we can move to the second stage which is setting up a MongoDB replica set.\nConfigure MongoDB replica set On our master machine (docker swarm), we will be add a new docker compose which will be used for the MongoDB deployment.\nmongo.yaml version: \u0026#34;3.8\u0026#34; services: mongo-1: image: mongo volumes: - \/data\/mongo\/mongo1:\/data\/db command: \u0026#39;mongod --oplogSize 128 --replSet dbrs\u0026#39; networks: - my-overlay-2 ports: - 27017:27017 deploy: placement: constraints: - node.",
+      "inLanguage": "en-us",
+      "isFamilyFriendly": "true",
+      "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https:\/\/workingtitle.pro\/posts\/graylog-on-docker-part-2\/"
+      },
+      "author" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "creator" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "accountablePerson" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "copyrightHolder" : "$ root@workingtitle.pro",
+      "copyrightYear" : "2023",
+      "dateCreated": "2023-07-09T17:38:53.00Z",
+      "datePublished": "2023-07-09T17:38:53.00Z",
+      "dateModified": "2023-07-09T17:38:53.00Z",
+      "publisher":{
+          "@type":"Organization",
+          "name": "$ root@workingtitle.pro",
+          "url": "https://workingtitle.pro",
+          "logo": {
+              "@type": "ImageObject",
+              "url": "https:\/\/workingtitle.pro\/assets\/favicon.ico",
+              "width":"32",
+              "height":"32"
+          }
+      },
+      "image": "https://workingtitle.pro/assets/favicon.ico",
+      "url" : "https:\/\/workingtitle.pro\/posts\/graylog-on-docker-part-2\/",
+      "wordCount" : "577",
+      "genre" : [ ],
+      "keywords" : [ ]
+  }
+  </script>
+  
+  
+  </head>
+<body>
+  <a class="skip-link" href="#main">Skip to main</a>
+  <main id="main">
+  <div class="content">
+    <header>
+<p style="padding: 0;margin: 0;">
+  <a href="/">
+    <b>$ root@workingtitle.pro</b>
+    <span class="text-stone-500 animate-blink">▮</span>
+  </a>
+</p>
+<ul style="padding: 0;margin: 0;">
+  
+  
+  <li class="">
+    <a href="/posts/"><span>Post</span></a>
+    
+  <li class="">
+    <a href="/about/"><span>About</span></a>
+    
+  </li>
+</ul>
+</header>
+<hr class="hr-list" style="padding: 0;margin: 0;">
+    <section>
+      <h2 class="post">Graylog on Docker — Part 2: MongoDB  </h2>
+      <p>Now that we&rsquo;ve setup our Elasticsearch cluster in <a href="https://workingtitle.pro/posts/graylog-on-docker-part-1/">part one</a>, we can move to the second stage which is setting up a MongoDB replica set.</p>
+<h2 id="configure-mongodb-replica-set">Configure MongoDB replica set</h2>
+<p>On our master machine (docker swarm), we will be add a new docker compose which will be used for the MongoDB deployment.</p>
+<h3 id="mongoyaml">mongo.yaml</h3>
+<pre tabindex="0"><code>version: &#34;3.8&#34;
+
+services:
+  mongo-1:
+    image: mongo
+    volumes:
+      - /data/mongo/mongo1:/data/db
+    command: &#39;mongod --oplogSize 128 --replSet dbrs&#39;
+    networks:
+      - my-overlay-2
+    ports:
+      - 27017:27017
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type == master
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  mongo-2:
+    image: mongo
+    volumes:
+      - /data/mongo/mongo2:/data/db
+    command: &#39;mongod --oplogSize 128 --replSet dbrs&#39;
+    networks:
+      - my-overlay-2
+    ports:
+      - 27018:27017
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type == worker-1
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+  mongo-3:
+    image: mongo
+    volumes:
+      - /data/mongo/mongo3:/data/db
+    command: &#39;mongod --oplogSize 128 --replSet dbrs&#39;
+    networks:
+      - my-overlay-2
+    ports:
+      - 27019:27017
+    deploy:
+      placement:
+        constraints:
+          - node.labels.type == worker-2
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+volumes:
+  mongodb:
+    driver: &#34;local&#34;
+networks:
+  my-overlay-2:
+    external: true
+</code></pre><p>Now let&rsquo;s walk through it:</p>
+<ul>
+<li>We create 3 containers <code>mongo-1</code>,<code>mongo-2</code> and <code>mongo-3</code></li>
+<li>Each container is always placed on a different node using <code>constraints</code>. I&rsquo;ve configured my master node with the <code>master</code> label, and each of the worker nodes with a <code>worker</code> label.</li>
+<li>MongoDB files are stored under the <code>/data/mongo</code> directory on each node. I&rsquo;ve used NFS to mount this directory on a different server for larger storage but you can manually create these directories or each node, or change them entirely based on your needs.</li>
+<li>The containers use the same network <code>my-overlay-2</code> as the rest of the containers described on <a href="https://workingtitle.pro/posts/graylog-on-docker-part-1/">Part 1</a>. This is crucial since we need all the components of the Graylog cluster (Elasticsearch, MongoDB, Graylog) to talk to each other.</li>
+<li>The command <code>mongod --oplogSize 128 --replSet dbrs</code> tells our mongo instances that we want to initiate a replica set called <code>dbrs</code>. You can change this to your desired name.</li>
+<li>I&rsquo;ve used different host ports for each container (<code>27017</code>, <code>27018</code>, <code>27019</code>) since initially I didn&rsquo;t plan to place each container on a different node. If you&rsquo;re planning to omit the constrains so the containers can be placed on any node, you should keep this port configuration. Otherwise, you can switch to <code>27017:27017</code> for all the containers.</li>
+</ul>
+<h2 id="start-the-stack">Start the Stack</h2>
+<p>That&rsquo;s pretty much it. Once you&rsquo;ve made the changes to the compose file, save it somewhere on the master node and run it:</p>
+<pre tabindex="0"><code>docker stack deploy -c mongo.yaml mongo
+</code></pre><h2 id="initialize-the-replica-set">Initialize the replica set</h2>
+<p>Once your containers are up and running, you should check the logs to make sure everything is okay. You can do so by this command:</p>
+<pre tabindex="0"><code>docker logs -f &lt;container_name&gt;
+</code></pre><p>If everything is done correctly, you should see something like <code>waiting to Initialize ...</code> in the logs.  If that&rsquo;s the case, you need to run this command from a machine that has access to your cluster:</p>
+<pre tabindex="0"><code>mongosh --host &#39;172.17.93.171:27017&#39; --eval &#39;rs.initiate({ _id: &#34;dbrs&#34;, members: [{ _id: 0, host : &#34;172.17.93.171:27017&#34; }, { _id: 1, host : &#34;172.17.93.172:27018&#34; }, { _id: 2, host : &#34;172.17.93.170:27019&#34; }]})&#39;
+</code></pre><ul>
+<li>You should have <code>mongosh</code> installed on the node that&rsquo;s running this.</li>
+<li>Replace the IPs with your docker swarm node IPs.</li>
+<li>If you&rsquo;ve changed the replica set name in the docker-compose file, make sure to change it from <code>dbrs</code> to your name.</li>
+</ul>
+<p>Once this command is executed, you should see a message regarding the successful replica set initialization.</p>
+<p>And that&rsquo;s it! You now have a working MongoDB replica set on docker swarm! 🥳🥳🥳</p>
+<p>In the next post, we&rsquo;re going to finish up the cluster by deploying Graylog.</p>
+
+      
+      <div class="post-date">
+        <span class="g time">July 9, 2023 </span> &#8729;
+         
+      </div>
+      
+    </section>
+    
+    <div id="comments">
+      <script src="https://utteranc.es/client.js"
+    repo=ali-foroughi/workingtitle.pro
+    issue-term="pathname"
+    theme=github-light
+    crossorigin="anonymous"
+    async>
+</script>
+
+    </div>
+    
+  </div>
+</main>
+</body>
+</html>

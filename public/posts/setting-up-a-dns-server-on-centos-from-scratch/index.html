@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Liste - https://workingtitle.pro">
+    <title>Setting Up a DNS Server on CentOS From Scratch | $ root@workingtitle.pro</title>
+    <meta name="description" content="A minimal hugo theme focus on content">
+    <meta property="og:title" content="Setting Up a DNS Server on CentOS From Scratch" />
+<meta property="og:description" content="Setting up a DNS server with BIND is not a very difficult process, but most of the guides and walk-through I’ve read on the subject tend to make it more complicated than it has to be, or that their information is very outdated. The results are a group of confused system admins who get stuck in an endless loop of troubleshooting their damn DNS server!
+So my goal here is to help you set up your DNS server and get it running with minimal hassle." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://workingtitle.pro/posts/setting-up-a-dns-server-on-centos-from-scratch/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-07-13T00:00:00+00:00" />
+<meta property="article:modified_time" content="2020-07-13T00:00:00+00:00" />
+
+    <meta itemprop="name" content="Setting Up a DNS Server on CentOS From Scratch">
+<meta itemprop="description" content="Setting up a DNS server with BIND is not a very difficult process, but most of the guides and walk-through I’ve read on the subject tend to make it more complicated than it has to be, or that their information is very outdated. The results are a group of confused system admins who get stuck in an endless loop of troubleshooting their damn DNS server!
+So my goal here is to help you set up your DNS server and get it running with minimal hassle."><meta itemprop="datePublished" content="2020-07-13T00:00:00+00:00" />
+<meta itemprop="dateModified" content="2020-07-13T00:00:00+00:00" />
+<meta itemprop="wordCount" content="990">
+<meta itemprop="keywords" content="" />
+    
+    <link rel="canonical" href="https://workingtitle.pro/posts/setting-up-a-dns-server-on-centos-from-scratch/">
+    <link rel="icon" href="https://workingtitle.pro/assets/favicon.ico">
+    <link rel="dns-prefetch" href="https://www.google-analytics.com">
+    <link href="https://www.google-analytics.com" rel="preconnect" crossorigin>
+    <link rel="alternate" type="application/atom+xml" title="$ root@workingtitle.pro" href="https://workingtitle.pro/atom.xml" />
+    <link rel="alternate" type="application/json" title="$ root@workingtitle.pro" href="https://workingtitle.pro/feed.json" />
+    <link rel="shortcut icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=">
+    
+    <style>*,:after,:before{box-sizing:border-box;padding:0}body{font:1rem/1.5 '-apple-system',BlinkMacSystemFont,avenir next,avenir,helvetica,helvetica neue,ubuntu,roboto,noto,segoe ui,arial,sans-serif;text-rendering:optimizeLegibility;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;padding:2rem;background:#f5f5f5;color:#000}.skip-link{position:absolute;top:-40px;left:0;background:#eee;z-index:100}.skip-link:focus{top:0}h1,h2,h3,h4,h5,strong,b{font-size:inherit;font-weight:600}header{line-height:2;padding-bottom:1.5rem}.link{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-decoration:none}.time{font-variant-numeric:tabular-nums;white-space:nowrap}blockquote{border-left:5px solid #eee;padding-left:1rem;margin:0}a,a:visited{color:inherit}a:hover,a.heading-link{text-decoration:none}pre{padding:.5rem;overflow:auto;overflow-x:scroll;overflow-wrap:normal}code,pre{font-family:San Francisco Mono,Monaco,consolas,lucida console,dejavu sans mono,bitstream vera sans mono,monospace;font-size:normal;font-size:small;background:#eee}code{margin:.1rem;border:none}ul{list-style-type:square}ul,ol{padding-left:1.2rem}.list{line-height:2;list-style-type:none;padding-left:0}.list li{padding-bottom:.1rem}.meta{color:#777}.content{max-width:70ch;margin:0 auto}header{line-height:2;display:flex;justify-content:space-between;padding-bottom:1rem}header a{text-decoration:none}header ul{list-style-type:none;padding:0}header li,header a{display:inline}h2.post{padding-top:.5rem}header ul a:first-child{padding-left:1rem}.nav{height:1px;background:#000;content:'';max-width:10%}.list li{display:flex;align-items:baseline}.list li time{flex:initial}.hr-list{margin-top:0;margin-bottom:0;margin-right:.5rem;margin-left:.5rem;height:1px;border:0;flex:1 0 1rem}.m,hr{border:0;margin:3rem 0}img{max-width:100%;height:auto}.post-date{margin:5% 0}.index-date{color:#9a9a9a}.animate-blink{animation:opacity 1s infinite;opacity:1}@keyframes opacity{0%{opacity:1}50%{opacity:.5}100%{opacity:0}}.tags{display:flex;justify-content:space-between}.tags ul{padding:0;margin:0}.tags li{display:inline}.avatar{height:120px;width:120px;position:relative;margin:-10px 0 0 15px;float:right;border-radius:50%}</style>
+  
+    
+  
+  
+  <script type="application/ld+json">
+  {
+      "@context": "http://schema.org",
+      "@type": "BlogPosting",
+      "articleSection": "posts",
+      "name": "Setting Up a DNS Server on CentOS From Scratch",
+      "headline": "Setting Up a DNS Server on CentOS From Scratch",
+      "alternativeHeadline": "",
+      "description": "Setting up a DNS server with BIND is not a very difficult process, but most of the guides and walk-through I’ve read on the subject tend to make it more complicated than it has to be, or that their information is very outdated. The results are a group of confused system admins who get stuck in an endless loop of troubleshooting their damn DNS server!\nSo my goal here is to help you set up your DNS server and get it running with minimal hassle.",
+      "inLanguage": "en-us",
+      "isFamilyFriendly": "true",
+      "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": "https:\/\/workingtitle.pro\/posts\/setting-up-a-dns-server-on-centos-from-scratch\/"
+      },
+      "author" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "creator" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "accountablePerson" : {
+          "@type": "Person",
+          "name": ""
+      },
+      "copyrightHolder" : "$ root@workingtitle.pro",
+      "copyrightYear" : "2020",
+      "dateCreated": "2020-07-13T00:00:00.00Z",
+      "datePublished": "2020-07-13T00:00:00.00Z",
+      "dateModified": "2020-07-13T00:00:00.00Z",
+      "publisher":{
+          "@type":"Organization",
+          "name": "$ root@workingtitle.pro",
+          "url": "https://workingtitle.pro",
+          "logo": {
+              "@type": "ImageObject",
+              "url": "https:\/\/workingtitle.pro\/assets\/favicon.ico",
+              "width":"32",
+              "height":"32"
+          }
+      },
+      "image": "https://workingtitle.pro/assets/favicon.ico",
+      "url" : "https:\/\/workingtitle.pro\/posts\/setting-up-a-dns-server-on-centos-from-scratch\/",
+      "wordCount" : "990",
+      "genre" : [ ],
+      "keywords" : [ ]
+  }
+  </script>
+  
+  
+  </head>
+<body>
+  <a class="skip-link" href="#main">Skip to main</a>
+  <main id="main">
+  <div class="content">
+    <header>
+<p style="padding: 0;margin: 0;">
+  <a href="/">
+    <b>$ root@workingtitle.pro</b>
+    <span class="text-stone-500 animate-blink">▮</span>
+  </a>
+</p>
+<ul style="padding: 0;margin: 0;">
+  
+  
+  <li class="">
+    <a href="/posts/"><span>Post</span></a>
+    
+  <li class="">
+    <a href="/about/"><span>About</span></a>
+    
+  </li>
+</ul>
+</header>
+<hr class="hr-list" style="padding: 0;margin: 0;">
+    <section>
+      <h2 class="post">Setting Up a DNS Server on CentOS From Scratch</h2>
+      <p>Setting up a DNS server with BIND is not a very difficult process, but most of the guides and walk-through I’ve read on the subject tend to make it more complicated than it has to be, or that their information is very outdated. The results are a group of confused system admins who get stuck in an endless loop of troubleshooting their damn DNS server!</p>
+<p>So my goal here is to help you set up your DNS server and get it running with minimal hassle.</p>
+<br>
+<h2 id="what-you-will-need-to-start">What you will need to start</h2>
+<ul>
+<li>A freshly-installed Linux server ready to go. In this example, I’m going to be using CentOS 7</li>
+<li>A valid public IP address</li>
+<li>A registered domain name, e.g workingtitle.pro. If you don’t already have a domain name, you can register one through <a href="https://www.godaddy.com/it-it">GoDaddy</a> or <a href="https://www.namecheap.com/">Namecheap</a>.</li>
+</ul>
+<br>
+<h2 id="domain-settings">Domain settings</h2>
+<p>The first thing you’ll need to do is to create DNS records in your domain control panel. Login into your domain registry panel and create the nameserver records as so:</p>
+<pre tabindex="0"><code>ns1.yourdomain.com     IP: [your-server-ip]
+ns2.yourdomain.com     IP: [your-server-ip]
+</code></pre><br>
+<h2 id="installing-bind-and-initial-configuration">Installing BIND and initial configuration</h2>
+<p>The first step is to install BIND, which is the software that controls our DNS server. You can do so via this command:</p>
+<pre tabindex="0"><code>yum -y install bind bind-utils
+</code></pre><p>After the installation process is done, we’ll need to make our changes to the BIND configuration file in order to function correctly. In CentOS BIND is managed by a process called “named“. Open the configuration file with the text editor of your choice:</p>
+<pre tabindex="0"><code>vim /etc/named.conf
+</code></pre><p>The first section we need to change is this part:</p>
+<pre tabindex="0"><code>listen-on port 53 { 127.0.0.1; };
+listen-on-v6 port 53 { ::1; };
+</code></pre><p>However as it stands, the nameserver is only responding to requests from the server itself. (127.0.0.1). Therefore, if any computer on the internet tries to reach this server it will be rejected. We will need to change the value to any as so:</p>
+<pre tabindex="0"><code>listen-on port 53 { any; };
+listen-on-v6 port 53 { any; };
+</code></pre><p>Next, we need to allow the nameserver to accept query requests from any IP and to reject recursion. If Recursive DNS is active on a server, it will try to respond to DNS queries for domains that are NOT within your namesever. So technically, someone could ask your server for the IP of <a href="https://www.google.com">www.google.com</a>. Obviously your server is not the authority for that, so it’s standard practice to disable recursion.
+Make these changes as so:</p>
+<pre tabindex="0"><code>allow-query { any; };
+recursion no;
+</code></pre><p>In the next step we need to define zones for your domain. In the end of the /etc/named.conf file, add the following lines:</p>
+<pre tabindex="0"><code>zone &#34;workingtitle.pro&#34; IN {
+
+         type master;
+         file &#34;/var/named/workingtitle.pro.db&#34;;
+};
+</code></pre><p>Replace “workingtitle.pro” with your own domain name. This section tells the users that the zone for the domain “workingtitle.pro” exists on this sever and the details can be found at /var/named/workingtitle.pro.db.</p>
+<p>That’s all the changes we need to make to the configuration file. The rest of the settings are optional and you can change them based on your need.</p>
+<br>
+<h2 id="creating-zone-files">Creating Zone files</h2>
+<p>The next step is to create zone files for your domains. The zone files contain the DNS records, showing where each resource is located.</p>
+<p>Create the zone file for the domain by editing this file:</p>
+<pre tabindex="0"><code>vim /var/named/workingtitle.pro.db
+</code></pre><p>This is the same directory we defined in the previous step. Copy and paste the content blew into the file.</p>
+<pre tabindex="0"><code>$TTL 14400
+workingtitle.pro.   IN  SOA     ns1.workingtitle.pro. hostmaster.workingtitle.pro. (
+                                                1001    ;Serial
+                                                4H      ;Refresh
+                                                15M     ;Retry
+                                                1W      ;Expire
+                                                1D      ;Minimum TTL
+                                                )
+
+;Name Server Information
+workingtitle.pro.	14400	IN	NS      ns1.workingtitle.pro.
+workingtitle.pro.	14400	IN      NS      ns2.workingtitle.pro.
+
+;IP address of Name Server
+ns1	IN	A       8.8.8.8	;replace with your server public IP address
+ns2	IN	A	8.8.8.8	;replace with your server public IP address
+
+;Mail exchanger
+workingtitle.pro.	IN  	MX 	10	mail.workingtitle.pro.
+
+;A - Record HostName To IP Address
+workingtitle.pro.     IN  A       8.8.8.8 ;replace with your server public IP address
+www	IN	A	8.8.8.8	;replace with your server public IP address
+mail	IN	A	8.8.8.8	;replace with your server public IP address
+
+;CNAME record
+ftp     IN	CNAME        workingtitle.pro.
+</code></pre><p>Let’s take a look at each section individually:</p>
+<pre tabindex="0"><code>;Name Server Information
+workingtitle.pro.	14400	IN	NS      ns1.workingtitle.pro.
+workingtitle.pro.	14400	IN      NS      ns2.workingtitle.pro.
+</code></pre><p>Here we’re defining our nameserver address so We’re essentially telling anyone who is querying our server that the nameservers for domain “workingtitle.pro” are “ns1.workingtitle.pro” and “ns2.workingtitle.pro”. You should obviously change this to your own domain name.</p>
+<pre tabindex="0"><code>;IP address of Name Server
+ns1	IN	A       8.8.8.8	;replace with your server public IP address
+ns2	IN	A	8.8.8.8	;replace with your server public IP address
+</code></pre><p>Now we need to define the IP address of our nameservers. Here you can see that the IP for “ns1” and “ns2” has been defined. Replace 8.8.8.8 with your server public IP.</p>
+<p><b>Important note</b>: It is strongly advised to use at least two different servers with different IPs for your nameservers. This is to provide redundancy in case one of the nameservers fails, but in the spirit of keeping things simple, I’ve only used one server with a single IP.</p>
+<pre tabindex="0"><code>;A - Record HostName To IP Address
+workingtitle.pro.     IN  A       8.8.8.8 ;replace with your server public IP address
+www	IN	A	8.8.8.8	;replace with your server public IP address
+mail	IN	A	8.8.8.8	;replace with your server public IP address
+
+;CNAME record
+ftp     IN	CNAME        workingtitle.pro.
+</code></pre><p>In this section we can set the main DNS records such as the A record for the domain, the IP of the mail server and other services.</p>
+<br>
+<h2 id="firewall-configuration">Firewall configuration</h2>
+<p>We need to open port 53 on the server firewall in order to allow DNS traffic through. You can use the following command:</p>
+<pre tabindex="0"><code>firewall-cmd --zone=external --permanent --add-port=53/udp
+firewall-cmd --reload
+</code></pre><p>If you’re not using <code>firewalld</code>, you can use the following command to open the port with <code>iptables</code>.</p>
+<pre tabindex="0"><code>iptables -A INPUT -p udp --dport 53 -j ACCEPT
+</code></pre><br>
+<h2 id="start-the-dns-service">Start the DNS service</h2>
+<p>The configuration is done! We can go ahead and start the DNS service:</p>
+<pre tabindex="0"><code>systemctl enable named
+systemctl start named
+</code></pre>
+      
+      <div class="post-date">
+        <span class="g time">July 13, 2020 </span> &#8729;
+         
+      </div>
+      
+    </section>
+    
+    <div id="comments">
+      <script src="https://utteranc.es/client.js"
+    repo=ali-foroughi/workingtitle.pro
+    issue-term="pathname"
+    theme=github-light
+    crossorigin="anonymous"
+    async>
+</script>
+
+    </div>
+    
+  </div>
+</main>
+</body>
+</html>
