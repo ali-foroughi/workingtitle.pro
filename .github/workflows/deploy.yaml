@@ -18,8 +18,10 @@ jobs:
       - name: Run ssh-agent (inside the build environment)
         run: |
           eval $(ssh-agent -s)
+          echo $HOST_IP
           echo "${{secrets.SSH_PRIV_KEY}}" | tr -d '\r' | ssh-add -
-          ssh-keyscan "$HOST_IP" >> ~/.ssh/known_hosts
+          echo $HOST_IP
+          ssh-keyscan $HOST_IP >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
       - name: Build with Hugo & deploy
