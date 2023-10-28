@@ -18,15 +18,15 @@ jobs:
       - name: Run ssh-agent (inside the build environment)
         run: |
           eval $(ssh-agent -s)
-          echo $HOST_IP
+          echo ${{secrets.HOST_IP}}
           echo "${{secrets.SSH_PRIV_KEY}}" | tr -d '\r' | ssh-add -
           echo $HOST_IP
-          ssh-keyscan $HOST_IP >> ~/.ssh/known_hosts
+          ssh-keyscan ${{secrets.HOST_IP}} >> ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
       - name: Build with Hugo & deploy
         run: |
           apt-get update && apt-get install -y hugo rsync
           hugo
-          rsync -avz -e "ssh -p $SSH_PORT" --delete public/ root@$HOST_IP:/var/www/workingtitle.pro/
+          rsync -avz -e "ssh -p ${{secrets.SSH_PORT}}" --delete public/ root@${{secrets.HOST_IP}}:/var/www/workingtitle.pro/
 
